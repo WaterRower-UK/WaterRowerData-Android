@@ -136,4 +136,76 @@ class RowerDataCharacteristicTest {
             expect(result.instantaneousPaceSeconds).toBe(513)
         }
     }
+
+    @Nested
+    inner class `Multiple properties present` {
+
+        @Test
+        fun `multiple properties present properly offsets values for average stroke rate and total distance`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(
+                averageStrokeRatePresent = true,
+                totalDistancePresent = true
+            )
+            val data = CharacteristicData.create(
+                flags,
+                7, // Average stroke rate of 3.5
+                16, // Total distance of 16
+                0,
+                0
+            )
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.averageStrokeRate).toBe(3.5)
+            expect(result.totalDistanceMeters).toBe(16)
+        }
+
+        @Test
+        fun `multiple properties present properly offsets values for average stroke rate and instantaneous pace`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(
+                averageStrokeRatePresent = true,
+                instantaneousPacePresent = true
+            )
+            val data = CharacteristicData.create(
+                flags,
+                7, // Average stroke rate of 3.5
+                16, // Instantaneous pace of 16
+                0
+            )
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.averageStrokeRate).toBe(3.5)
+            expect(result.instantaneousPaceSeconds).toBe(16)
+        }
+        @Test
+        fun `multiple properties present properly offsets values for total distance and instantaneous pace`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(
+                totalDistancePresent = true,
+                instantaneousPacePresent = true
+            )
+            val data = CharacteristicData.create(
+                flags,
+                32, // Total distance of 32
+                0,
+                0,
+                16, // Instantaneous pace of 16
+                0
+            )
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.totalDistanceMeters).toBe(32)
+            expect(result.instantaneousPaceSeconds).toBe(16)
+        }
+    }
 }
