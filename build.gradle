@@ -1,0 +1,72 @@
+buildscript {
+    ext.kotlinVersion = "1.3.72"
+
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("com.android.tools.build:gradle:4.0.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("de.mannodermaus.gradle.plugins:android-junit5:1.6.2.0")
+        classpath("com.adarshr:gradle-test-logger-plugin:2.1.0")
+    }
+}
+
+plugins {
+    id("com.github.ben-manes.versions") version "0.29.0"
+    id("io.spring.dependency-management") version "1.0.9.RELEASE"
+}
+
+apply from: "$rootDir/dependencies.gradle"
+
+subprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    project.apply from: "$rootDir/dependencies.gradle"
+
+    afterEvaluate { project ->
+        if (plugins.hasPlugin("com.android.library") || plugins.hasPlugin("com.android.application")) {
+            android {
+                compileSdkVersion(30)
+                defaultConfig {
+                    targetSdkVersion(30)
+
+                    versionName = git.versionName()
+                    versionCode = git.commitCount()
+                }
+
+                testOptions {
+                    unitTests.returnDefaultValues = true
+                }
+
+                lintOptions {
+                    warningsAsErrors = true
+                    textReport = true
+
+                    ignoreTestSources true
+
+                    ignore "ObsoleteLintCustomCheck", "GradleDependency"
+                }
+
+                compileOptions {
+                    sourceCompatibility 1.8
+                    targetCompatibility 1.8
+                }
+            }
+        }
+
+        if (project.hasProperty("test") || project.hasProperty("android")) {
+            project.apply from: "$rootDir/.ops/testing.gradle"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete(rootProject.buildDir)
+}
