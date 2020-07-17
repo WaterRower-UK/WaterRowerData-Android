@@ -1,6 +1,11 @@
 package uk.co.waterrower.waterrowerdata.ble
 
-import kotlin.experimental.and
+import uk.co.waterrower.waterrowerdata.ble.internal.gattspecification.Field
+import uk.co.waterrower.waterrowerdata.ble.internal.gattspecification.readIntValue
+import uk.co.waterrower.waterrowerdata.ble.internal.rowerdataspecification.RowerDataAverageStrokeRateField
+import uk.co.waterrower.waterrowerdata.ble.internal.rowerdataspecification.RowerDataFlagsField
+import uk.co.waterrower.waterrowerdata.ble.internal.rowerdataspecification.RowerDataInstantaneousPaceField
+import uk.co.waterrower.waterrowerdata.ble.internal.rowerdataspecification.RowerDataTotalDistanceField
 
 object RowerDataCharacteristic {
 
@@ -12,34 +17,44 @@ object RowerDataCharacteristic {
         )
     }
 
+    private val fields = listOf(
+        RowerDataFlagsField,
+        RowerDataAverageStrokeRateField,
+        RowerDataTotalDistanceField,
+        RowerDataInstantaneousPaceField
+    )
+
     private fun averageStrokeRate(data: ByteArray): Double? {
-        val flagsValue = data[0]
-        val averageStrokeRatePresent = flagsValue.and(0b10).toInt() != 0
+        val intValue = readIntValue(data, RowerDataAverageStrokeRateField)
+        if (intValue == null) return null
 
-        if (averageStrokeRatePresent) {
-            return data[2] / 2.0
-        }
-
-        return null
+        return intValue / 2.0
     }
 
     private fun totalDistanceMeters(data: ByteArray): Int? {
-        val flagsValue = data[0]
-        val totalDistancePresent = flagsValue.and(0b100).toInt() != 0
-
-        if (totalDistancePresent) {
-            return data[2] + data[3].toInt().shl(8) + data[4].toInt().shl(16)
-        }
-
-        return null
+        return readIntValue(data, RowerDataTotalDistanceField)
     }
 
     private fun instantaneousPace(data: ByteArray): Int? {
-        val flagsValue = data[0]
-        val instantaneousPacePresent = flagsValue.and(0b1000).toInt() != 0
+        return readIntValue(data, RowerDataInstantaneousPaceField)
+    }
 
-        if (instantaneousPacePresent) {
-            return data[2] + data[3].toInt().shl(8)
+    private fun readIntValue(bytes: ByteArray, field: Field): Int? {
+        if (!field.isPresentIn(bytes)) {
+            return null
+        }
+
+        var offset = 0
+        for (i in 0..fields.count()) {
+            val f = fields[i]
+            if (f.name == field.name) {
+                val intValue = bytes.readIntValue(field.format, offset)
+                return intValue
+            }
+
+            if (f.isPresentIn(bytes)) {
+                offset += f.format.numberOfBytes()
+            }
         }
 
         return null
