@@ -7,7 +7,8 @@ object RowerDataCharacteristic {
     fun decode(bytes: ByteArray): RowerData {
         return RowerData(
             averageStrokeRate = averageStrokeRate(bytes),
-            totalDistanceMeters = totalDistanceMeters(bytes)
+            totalDistanceMeters = totalDistanceMeters(bytes),
+            instantaneousPaceSeconds = instantaneousPace(bytes)
         )
     }
 
@@ -28,6 +29,17 @@ object RowerDataCharacteristic {
 
         if (totalDistancePresent) {
             return data[2] + data[3].toInt().shl(8) + data[4].toInt().shl(16)
+        }
+
+        return null
+    }
+
+    private fun instantaneousPace(data: ByteArray): Int? {
+        val flagsValue = data[0]
+        val instantaneousPacePresent = flagsValue.and(0b1000).toInt() != 0
+
+        if (instantaneousPacePresent) {
+            return data[2] + data[3].toInt().shl(8)
         }
 
         return null

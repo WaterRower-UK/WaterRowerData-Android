@@ -4,7 +4,8 @@ object RowerDataCharacteristicFlags {
 
     fun create(
         averageStrokeRatePresent: Boolean = false,
-        totalDistancePresent: Boolean = false
+        totalDistancePresent: Boolean = false,
+        instantaneousPacePresent: Boolean = false
     ): ByteArray {
         val flags = mutableMapOf<Int, Boolean>()
 
@@ -14,6 +15,10 @@ object RowerDataCharacteristicFlags {
 
         if (totalDistancePresent) {
             flags[2] = true
+        }
+
+        if (instantaneousPacePresent) {
+            flags[3] = true
         }
 
         return CharacteristicFlags.createFlags(flags)
