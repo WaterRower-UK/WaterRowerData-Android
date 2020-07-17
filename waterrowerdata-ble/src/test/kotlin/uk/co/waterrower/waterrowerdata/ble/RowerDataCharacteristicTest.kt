@@ -9,7 +9,7 @@ import uk.co.waterrower.waterrowerdata.ble.testutil.RowerDataCharacteristicFlags
 class RowerDataCharacteristicTest {
 
     @Nested
-    inner class `Average Stroke Rate`() {
+    inner class `Average Stroke Rate` {
 
         @Test
         fun `averageStrokeRate not present results in null value`() {
@@ -91,6 +91,49 @@ class RowerDataCharacteristicTest {
 
             /* Then */
             expect(result.totalDistanceMeters).toBe(262657)
+        }
+    }
+
+    @Nested
+    inner class `Instantaneous Pace` {
+
+        @Test
+        fun `instantaneousPace not present results in null value`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(instantaneousPacePresent = false)
+            val data = CharacteristicData.create(flags)
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.instantaneousPaceSeconds).toBeNull()
+        }
+
+        @Test
+        fun `instantaneousPace present results in uint16 value for low value`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(instantaneousPacePresent = true)
+            val data = CharacteristicData.create(flags, 1, 0)
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.instantaneousPaceSeconds).toBe(1)
+        }
+
+        @Test
+        fun `instantaneousPace present results in uint16 value for high value`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(instantaneousPacePresent = true)
+            val data = CharacteristicData.create(flags, 1, 2) // 1 + 512
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.instantaneousPaceSeconds).toBe(513)
         }
     }
 }
