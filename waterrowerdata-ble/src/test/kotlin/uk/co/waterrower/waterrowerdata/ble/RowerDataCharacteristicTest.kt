@@ -37,4 +37,60 @@ class RowerDataCharacteristicTest {
             expect(result.averageStrokeRate).toBe(3.5)
         }
     }
+
+    @Nested
+    inner class `Total Distance` {
+
+        @Test
+        fun `totalDistance not present results in null value`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(totalDistancePresent = false)
+            val data = CharacteristicData.create(flags)
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.totalDistanceMeters).toBeNull()
+        }
+
+        @Test
+        fun `averageStrokeRate present results in uint24 value for low value`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(totalDistancePresent = true)
+            val data = CharacteristicData.create(flags, 1, 0, 0)
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.totalDistanceMeters).toBe(1)
+        }
+
+        @Test
+        fun `averageStrokeRate present results in uint24 value for medium value`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(totalDistancePresent = true)
+            val data = CharacteristicData.create(flags, 1, 2, 0) // 1 + 512
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.totalDistanceMeters).toBe(513)
+        }
+
+        @Test
+        fun `averageStrokeRate present results in uint24 value for high value`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(totalDistancePresent = true)
+            val data = CharacteristicData.create(flags, 1, 2, 4) // 1 + 512 + 262144
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.totalDistanceMeters).toBe(262657)
+        }
+    }
 }
