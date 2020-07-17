@@ -1,5 +1,6 @@
 package uk.co.waterrower.waterrowerdata.ble.internal.gattspecification
 
+import uk.co.waterrower.waterrowerdata.ble.internal.gattspecification.Format.SInt16
 import uk.co.waterrower.waterrowerdata.ble.internal.gattspecification.Format.UInt16
 import uk.co.waterrower.waterrowerdata.ble.internal.gattspecification.Format.UInt24
 import uk.co.waterrower.waterrowerdata.ble.internal.gattspecification.Format.UInt8
@@ -12,6 +13,7 @@ internal fun ByteArray.readIntValue(
         UInt8 -> unsignedByteToInt(this[offset])
         UInt16 -> unsignedBytesToInt(this[offset], this[offset + 1])
         UInt24 -> unsignedBytesToInt(this[offset], this[offset + 1], this[offset + 2])
+        SInt16 -> unsignedToSigned(unsignedBytesToInt(this[offset], this[offset + 1]), size = 16)
     }
 }
 
