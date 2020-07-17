@@ -1,0 +1,20 @@
+name: Test
+
+on: pull_request
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: ktlint
+        run: |
+          curl -sSLO https://github.com/pinterest/ktlint/releases/download/0.37.2/ktlint
+          chmod a+x ktlint
+          ./ktlint "**/src/**/*.kt" --color --relative
+
+      - name: Test
+        run: ./gradlew test

@@ -1,0 +1,24 @@
+def hasAndroid = plugins.hasPlugin("com.android.library") || plugins.hasPlugin("com.android.application")
+
+if (!hasAndroid) {
+    test {
+        useJUnitPlatform {
+            systemProperties = ['junit.jupiter.extensions.autodetection.enabled': 'true']
+        }
+
+        reports {
+            html.enabled true
+            junitXml.enabled true
+        }
+    }
+} else {
+    project.apply plugin: "de.mannodermaus.android-junit5"
+    android.testOptions.junitPlatform {
+        configurationParameter "junit.jupiter.extensions.autodetection.enabled", "true"
+    }
+}
+
+project.apply plugin: "com.adarshr.test-logger"
+testlogger {
+    theme = "mocha"
+}
