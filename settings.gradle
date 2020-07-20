@@ -1,1 +1,3 @@
 include(":waterrowerdata-ble")
+
+include(":sample-app")

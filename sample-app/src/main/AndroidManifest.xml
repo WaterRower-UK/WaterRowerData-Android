@@ -1,0 +1,21 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="uk.co.waterrower.waterrowerdata.sample">
+
+    <application
+        android:label="@string/app_name"
+        tools:ignore="AllowBackup,MissingApplicationIcon">
+
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.WaterRowerSample">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+    </application>
+
+</manifest>
