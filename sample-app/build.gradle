@@ -1,0 +1,42 @@
+apply plugin: "com.android.application"
+apply plugin: "kotlin-android"
+
+android {
+    defaultConfig {
+        applicationId "uk.co.waterrower.waterrowerdata.sample"
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            shrinkResources false
+        }
+    }
+
+    lintOptions {
+        checkDependencies true
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+
+    implementation "androidx.appcompat:appcompat"
+    implementation "com.google.android.material:material"
+}
+
+android.variantFilter { variant ->
+    def names = variant.flavors*.name
+    if (variant.buildType.name == "release") {
+        setIgnore(true)
+    }
+}

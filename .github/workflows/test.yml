@@ -17,4 +17,4 @@ jobs:
           ./ktlint "**/src/**/*.kt" --color --relative
 
       - name: Test
-        run: ./gradlew test
+        run: ./gradlew test :sample-app:lintDebug :sample-app:assembleDebug
