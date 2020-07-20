@@ -2,7 +2,6 @@
 <resources>
 
     <style name="Theme.WaterRowerSample" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/waterrower_blue</item>
         <item name="colorPrimaryDark">#229FBE</item>
     </style>
 

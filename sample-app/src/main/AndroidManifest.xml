@@ -7,7 +7,7 @@
         tools:ignore="AllowBackup,MissingApplicationIcon">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.devices.DevicesActivity"
             android:theme="@style/Theme.WaterRowerSample">
 
             <intent-filter>

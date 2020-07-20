@@ -7,7 +7,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:4.0.1")
+        classpath("com.android.tools.build:gradle:4.2.0-alpha04")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("de.mannodermaus.gradle.plugins:android-junit5:1.6.2.0")
         classpath("com.adarshr:gradle-test-logger-plugin:2.1.0")
@@ -26,11 +26,7 @@ subprojects {
         google()
         mavenCentral()
 
-        jcenter {
-            content {
-                includeGroup "org.jetbrains.trove4j"
-            }
-        }
+        jcenter()
     }
 
     project.apply from: "$rootDir/dependencies.gradle"
@@ -60,6 +56,10 @@ subprojects {
                 compileOptions {
                     sourceCompatibility 1.8
                     targetCompatibility 1.8
+                }
+
+                kotlinOptions {
+                    jvmTarget = "1.8"
                 }
             }
         }
