@@ -25,6 +25,8 @@ android {
 }
 
 dependencies {
+    implementation project(":waterrowerdata-ble")
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
     implementation "androidx.appcompat:appcompat"

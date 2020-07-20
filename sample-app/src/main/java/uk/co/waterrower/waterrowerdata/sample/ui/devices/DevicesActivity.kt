@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.mutableStateOf
 import androidx.ui.core.setContent
+import uk.co.waterrower.waterrowerdata.ble.FitnessMachineService
 import uk.co.waterrower.waterrowerdata.sample.ui.theming.AppTheme
 import uk.co.waterrower.waterrowerdata.sample.util.Cancellable
 import uk.co.waterrower.waterrowerdata.sample.waterRowerDataSampleApplication
@@ -48,7 +49,7 @@ class DevicesActivity : AppCompatActivity() {
 
         scanCancellable = waterRowerDataSampleApplication.appComponent.bleScanner
             .startScan(
-                null,
+                listOf(FitnessMachineService.uuid),
                 object : ScanCallback() {
 
                     override fun onScanResult(callbackType: Int, result: ScanResult) {
