@@ -8,6 +8,14 @@ dependencyManagement {
         dependency "androidx.appcompat:appcompat:1.1.0"
         dependency "com.google.android.material:material:1.1.0"
 
+        // Compose
+        dependencySet(group: "androidx.ui", version: "0.1.0-dev13") {
+            entry "ui-core"
+            entry "ui-tooling"
+            entry "ui-layout"
+            entry "ui-material"
+        }
+
         // Testing & checks
         dependency "com.nhaarman:expect.kt:1.0.1"
         dependency "org.junit.jupiter:junit-jupiter-api:5.6.2"
@@ -18,11 +26,11 @@ dependencyManagement {
 rootProject.dependencyUpdates.resolutionStrategy {
     componentSelection { rules ->
         rules.all { ComponentSelection selection ->
-            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm', 'preview'].any { qualifier ->
+            boolean rejected = ["alpha", "beta", "rc", "cr", "m", "preview"].any { qualifier ->
                 selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
             }
             if (rejected) {
-                selection.reject('Release candidate')
+                selection.reject("Release candidate")
             }
         }
     }

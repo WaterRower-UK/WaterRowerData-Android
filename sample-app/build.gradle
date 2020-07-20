@@ -2,6 +2,10 @@ apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
 
 android {
+    buildFeatures {
+        compose true
+    }
+
     defaultConfig {
         applicationId "uk.co.waterrower.waterrowerdata.sample"
     }
@@ -15,13 +19,6 @@ android {
         }
     }
 
-    buildTypes {
-        debug {
-            minifyEnabled false
-            shrinkResources false
-        }
-    }
-
     lintOptions {
         checkDependencies true
     }
@@ -32,6 +29,11 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat"
     implementation "com.google.android.material:material"
+
+    implementation "androidx.ui:ui-core"
+    implementation "androidx.ui:ui-tooling"
+    implementation "androidx.ui:ui-layout"
+    implementation "androidx.ui:ui-material"
 }
 
 android.variantFilter { variant ->
