@@ -27,7 +27,7 @@ fun DevicesViewPreview() {
         mutableStateOf(
             DevicesViewModel(
                 (1..20).map {
-                    Device("Device $it")
+                    Device(id = it, name = "Device $it")
                 }
             )
         ),
