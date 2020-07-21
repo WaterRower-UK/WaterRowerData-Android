@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="All waterrowerdata-ble tests" type="JUnit" factoryName="JUnit">
+  <configuration default="false" name="All waterrowerdata-ble tests" type="AndroidJUnit" factoryName="Android JUnit">
     <module name="WaterRowerData-Android.waterrowerdata-ble" />
     <useClassPathOnly />
     <extension name="coverage">
@@ -19,3 +20,4 @@
     </method>
   </configuration>
 </component>
+
