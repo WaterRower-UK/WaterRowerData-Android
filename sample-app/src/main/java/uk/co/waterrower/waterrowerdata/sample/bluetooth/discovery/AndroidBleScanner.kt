@@ -1,8 +1,11 @@
 package uk.co.waterrower.waterrowerdata.sample.bluetooth.discovery
 
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
+import android.bluetooth.le.ScanSettings
+import android.util.Log.e
 import android.util.Log.i
 import android.util.Log.v
 import android.util.Log.w
@@ -13,9 +16,15 @@ class AndroidBleScanner(
     private val bluetoothAdapter: BluetoothAdapter
 ) {
 
-    private val bluetoothLeScanner get() = bluetoothAdapter.bluetoothLeScanner
+    private val bluetoothLeScanner: BluetoothLeScanner? get() = bluetoothAdapter.bluetoothLeScanner
 
     fun startScan(serviceUuids: List<UUID>?, callback: ScanCallback): Cancellable {
+        val scanner = bluetoothLeScanner
+        if (scanner == null) {
+            e("AndroidBleScanner", "No BluetoothLeScanner available. Is bluetooth turned on?")
+            return Cancellable.cancellable { }
+        }
+
         if (serviceUuids != null) {
             i("AndroidBleScanner", "Starting scan for $serviceUuids")
         } else {
@@ -24,7 +33,13 @@ class AndroidBleScanner(
 
         val listener = MyScanCallback(serviceUuids, callback)
 
-        bluetoothLeScanner.startScan(listener)
+        scanner.startScan(
+            null,
+            ScanSettings.Builder()
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .build(),
+            listener
+        )
 
         return Cancellable.cancellable {
             if (serviceUuids != null) {
@@ -34,9 +49,7 @@ class AndroidBleScanner(
             }
 
             listener.cancel()
-            if (bluetoothAdapter.isEnabled) {
-                bluetoothLeScanner.stopScan(listener)
-            }
+            bluetoothLeScanner?.stopScan(listener)
         }
     }
 

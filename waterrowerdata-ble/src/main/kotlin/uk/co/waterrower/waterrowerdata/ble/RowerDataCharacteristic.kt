@@ -19,8 +19,11 @@ import uk.co.waterrower.waterrowerdata.ble.internal.rowerdataspecification.Rower
 import uk.co.waterrower.waterrowerdata.ble.internal.rowerdataspecification.RowerDataStrokeRateField
 import uk.co.waterrower.waterrowerdata.ble.internal.rowerdataspecification.RowerDataTotalDistanceField
 import uk.co.waterrower.waterrowerdata.ble.internal.rowerdataspecification.RowerDataTotalEnergyField
+import java.util.UUID
 
 object RowerDataCharacteristic {
+
+    val uuid = UUID.fromString("00002AD1-0000-1000-8000-00805F9B34FB")
 
     fun decode(bytes: ByteArray): RowerData {
         return RowerData(
