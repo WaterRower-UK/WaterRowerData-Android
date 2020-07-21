@@ -4,11 +4,11 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.mutableStateOf
 import androidx.ui.core.setContent
 import uk.co.waterrower.waterrowerdata.ble.FitnessMachineService
+import uk.co.waterrower.waterrowerdata.sample.ui.devicedetails.DeviceDetailsActivity
 import uk.co.waterrower.waterrowerdata.sample.ui.theming.AppTheme
 import uk.co.waterrower.waterrowerdata.sample.util.Cancellable
 import uk.co.waterrower.waterrowerdata.sample.waterRowerDataSampleApplication
@@ -37,7 +37,7 @@ class DevicesActivity : AppCompatActivity() {
                 DevicesView(
                     state,
                     onDeviceClick = { device ->
-                        Toast.makeText(this, "Clicked ${device.name}", Toast.LENGTH_SHORT).show()
+                        startActivity(DeviceDetailsActivity.intent(this, device))
                     }
                 )
             }
@@ -68,7 +68,7 @@ class DevicesActivity : AppCompatActivity() {
 
         viewModel = viewModel.withAppended(
             Device(
-                id = scanResult.device.address,
+                address = scanResult.device.address,
                 name = scanResult.device.name
             )
         )

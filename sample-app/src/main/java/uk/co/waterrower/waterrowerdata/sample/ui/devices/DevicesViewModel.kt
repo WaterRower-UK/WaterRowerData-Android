@@ -5,7 +5,7 @@ data class DevicesViewModel(
 ) {
 
     fun withAppended(device: Device): DevicesViewModel {
-        if (devices.any { it.id == device.id }) return this
+        if (devices.any { it.address == device.address }) return this
 
         return DevicesViewModel(devices + device)
     }
