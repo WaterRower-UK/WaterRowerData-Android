@@ -12,7 +12,7 @@ internal class BleConnectionBluetoothGattCallback : BluetoothGattCallback() {
 
     private var gatt: BluetoothGatt? = null
 
-    private var connectionState: ConnectionState = ConnectionState.Connecting
+    private var connectionState: ConnectionState = ConnectionState.Disconnected
         set(value) {
             field = value
             listeners.forEach { it.onConnectionStateChanged(value) }
@@ -31,6 +31,7 @@ internal class BleConnectionBluetoothGattCallback : BluetoothGattCallback() {
 
     fun onGattAvailable(gatt: BluetoothGatt) {
         this.gatt = gatt
+        connectionState = ConnectionState.Connecting
     }
 
     override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
