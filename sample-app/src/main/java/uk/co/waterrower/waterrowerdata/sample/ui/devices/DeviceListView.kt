@@ -50,7 +50,7 @@ fun DeviceListViewPreview() {
     DeviceListView(
         mutableStateOf(
             (1..20).map {
-                Device(id = it, name = "Device $it")
+                Device(address = "Address $it", name = "Device $it")
             }
         ),
         onClick = { println("Clicked $it") }

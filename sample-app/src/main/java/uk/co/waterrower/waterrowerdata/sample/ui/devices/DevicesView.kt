@@ -7,6 +7,7 @@ import androidx.ui.foundation.Text
 import androidx.ui.layout.Column
 import androidx.ui.material.TopAppBar
 import androidx.ui.tooling.preview.Preview
+import uk.co.waterrower.waterrowerdata.sample.ui.theming.AppTheme
 import uk.co.waterrower.waterrowerdata.sample.util.map
 
 @Composable
@@ -23,14 +24,16 @@ fun DevicesView(viewModel: MutableState<DevicesViewModel>, onDeviceClick: (Devic
 @Preview
 @Composable
 fun DevicesViewPreview() {
-    DevicesView(
-        mutableStateOf(
-            DevicesViewModel(
-                (1..20).map {
-                    Device(id = it, name = "Device $it")
-                }
-            )
-        ),
-        onDeviceClick = { device -> println("Device clicked: $device") }
-    )
+    AppTheme {
+        DevicesView(
+            mutableStateOf(
+                DevicesViewModel(
+                    (1..20).map {
+                        Device(address = "Address $it", name = "Device $it")
+                    }
+                )
+            ),
+            onDeviceClick = { device -> println("Device clicked: $device") }
+        )
+    }
 }

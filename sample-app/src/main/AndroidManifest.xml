@@ -9,18 +9,19 @@
     <application
         android:name=".WaterRowerDataSampleApplication"
         android:label="@string/app_name"
+        android:theme="@style/Theme.WaterRowerSample"
         tools:ignore="AllowBackup,MissingApplicationIcon">
 
-        <activity
-            android:name=".ui.devices.DevicesActivity"
-            android:theme="@style/Theme.WaterRowerSample">
+        <activity android:name=".ui.devices.DevicesActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+
+        <activity android:name=".ui.devicedetails.DeviceDetailsActivity" />
+
     </application>
 
 </manifest>
