@@ -10,6 +10,7 @@ import androidx.ui.core.setContent
 import uk.co.waterrower.waterrowerdata.sample.bluetooth.connection.BleConnection
 import uk.co.waterrower.waterrowerdata.sample.bluetooth.connection.BleConnectionFactory
 import uk.co.waterrower.waterrowerdata.sample.bluetooth.connection.BleConnectionState
+import uk.co.waterrower.waterrowerdata.sample.bluetooth.rowerdata.ConnectedRowerDataBleDevice
 import uk.co.waterrower.waterrowerdata.sample.ui.devices.Device
 import uk.co.waterrower.waterrowerdata.sample.ui.theming.AppTheme
 import uk.co.waterrower.waterrowerdata.sample.util.Cancellable
@@ -28,7 +29,8 @@ class DeviceDetailsActivity : AppCompatActivity() {
         mutableStateOf(
             DeviceDetailsViewModel(
                 deviceName = device.name,
-                connectionStatus = ConnectionStatus.Disconnected
+                connectionStatus = ConnectionStatus.Disconnected,
+                rowerData = null
             )
         )
     }
@@ -39,6 +41,12 @@ class DeviceDetailsActivity : AppCompatActivity() {
     }
 
     private var connectionStateListenerCancellable: Cancellable? = null
+        set(value) {
+            field?.cancel()
+            field = value
+        }
+
+    private var rowerDataCancellable: Cancellable? = null
         set(value) {
             field?.cancel()
             field = value
@@ -65,23 +73,37 @@ class DeviceDetailsActivity : AppCompatActivity() {
         connectionStateListenerCancellable = connection.addConnectionStateListener(
             object : BleConnection.ConnectionStateListener {
                 override fun onConnectionStateChanged(connectionState: BleConnectionState) {
-                    runOnUiThread {
-                        state.value = state.value.copy(
-                            connectionStatus = when (connectionState) {
-                                is BleConnectionState.Disconnected -> ConnectionStatus.Disconnected
-                                is BleConnectionState.Connecting -> ConnectionStatus.Connecting
-                                is BleConnectionState.Connected -> ConnectionStatus.Connected
-                                is BleConnectionState.Failed -> ConnectionStatus.Failed
-                            }
-                        )
-                    }
+                    runOnUiThread { handle(connectionState) }
                 }
             }
         )
     }
 
+    private fun handle(connectionState: BleConnectionState) {
+        state.value = state.value.copy(
+            connectionStatus = when (connectionState) {
+                is BleConnectionState.Disconnected -> ConnectionStatus.Disconnected
+                is BleConnectionState.Connecting -> ConnectionStatus.Connecting
+                is BleConnectionState.Connected -> ConnectionStatus.Connected
+                is BleConnectionState.Failed -> ConnectionStatus.Failed
+            }
+        )
+
+        if (connectionState is BleConnectionState.Connected) {
+            rowerDataCancellable = ConnectedRowerDataBleDevice(connectionState.device).rowerData { rowerData ->
+                runOnUiThread {
+                    state.value = state.value.copy(rowerData = rowerData)
+                }
+            }
+        } else {
+            rowerDataCancellable = null
+            state.value = state.value.copy(rowerData = null)
+        }
+    }
+
     override fun onPause() {
         connectionStateListenerCancellable = null
+        rowerDataCancellable = null
         connection.disconnect()
 
         super.onPause()
