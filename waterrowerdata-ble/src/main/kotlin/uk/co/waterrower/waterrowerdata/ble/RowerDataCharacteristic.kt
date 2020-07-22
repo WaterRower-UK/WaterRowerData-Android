@@ -21,10 +21,36 @@ import uk.co.waterrower.waterrowerdata.ble.internal.rowerdataspecification.Rower
 import uk.co.waterrower.waterrowerdata.ble.internal.rowerdataspecification.RowerDataTotalEnergyField
 import java.util.UUID
 
+/**
+ * A class that can decode raw bytes into [RowerData] instances.
+ *
+ * This class follows the Rower Data characteristic specification
+ * as described in section 4.8 "Rower Data" of the
+ * Fitness Machine Service (FTMS) Bluetooth Service specification,
+ * revision v1.0.
+ *
+ * A copy of this specification can be found on
+ * https://www.bluetooth.com/specifications/gatt/
+ */
 object RowerDataCharacteristic {
 
-    val uuid = UUID.fromString("00002AD1-0000-1000-8000-00805F9B34FB")
+    /**
+     * The UUID value that identifies this characteristic.
+     */
+    val uuid: UUID = UUID.fromString("00002AD1-0000-1000-8000-00805F9B34FB")
 
+    /**
+     * Decodes given [bytes] into a [RowerData] instance.
+     *
+     * Due to restrictions in the byte buffer size some of the [RowerData]
+     * properties will be absent, which is represented as a `nil` value.
+     *
+     * @param bytes A [ByteArray] instance that contains the encoded data
+     *              as described in the Rower Data characteristic specification.
+     *
+     * @return A [RowerData] instance with the decoded properties.
+     *         Properties will be `nil` if not present in the encoded data.
+     */
     fun decode(bytes: ByteArray): RowerData {
         return RowerData(
             strokeRate = strokeRate(bytes),

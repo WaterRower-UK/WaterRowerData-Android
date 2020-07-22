@@ -3,6 +3,7 @@
 The `uk.co.waterrower:waterrowerdata-ble` artifact contains the sources for
 reading data from a BLE connected WaterRower device, such as an S5 monitor.
 
+
 The BLE enabled WaterRower modules use the FTMS GATT service specification
 with the RowerData GATT characteristic.
 This artifact provides classes that decode raw data received from a GATT

@@ -63,6 +63,7 @@
     <option name="PARAMETER_ANNOTATION_WRAP" value="1" />
     <option name="VARIABLE_ANNOTATION_WRAP" value="1" />
     <option name="ENUM_CONSTANTS_WRAP" value="1" />
+    <option name="SOFT_MARGINS" value="80" />
     <AndroidXmlCodeStyleSettings>
       <option name="LAYOUT_SETTINGS">
         <value>
