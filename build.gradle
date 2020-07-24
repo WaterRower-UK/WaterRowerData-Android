@@ -11,6 +11,9 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("de.mannodermaus.gradle.plugins:android-junit5:1.6.2.0")
         classpath("com.adarshr:gradle-test-logger-plugin:2.1.0")
+
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.9.17")
+        classpath("org.jetbrains.dokka:dokka-android-gradle-plugin:0.9.17")
     }
 }
 
@@ -20,6 +23,10 @@ plugins {
 }
 
 apply from: "$rootDir/dependencies.gradle"
+
+allprojects {
+    apply from: "$rootDir/.ops/git.gradle"
+}
 
 subprojects {
     repositories {
@@ -67,9 +74,15 @@ subprojects {
         if (project.hasProperty("test") || project.hasProperty("android")) {
             project.apply from: "$rootDir/.ops/testing.gradle"
         }
+
+        if (project.hasProperty("publishing")) {
+            project.apply from: "$rootDir/.ops/publishing.gradle"
+        }
     }
 }
 
 task clean(type: Delete) {
     delete(rootProject.buildDir)
 }
+
+println("Version ${git.versionName()}")

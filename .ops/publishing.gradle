@@ -1,0 +1,93 @@
+publishing {
+    def sonatype_username = "${findProperty("waterrower_sonatype_username") ?: System.getenv("waterrower_sonatype_username")}"
+    def sonatype_password = "${findProperty("waterrower_sonatype_password") ?: System.getenv("waterrower_sonatype_password")}"
+
+    repositories {
+        maven {
+            name = "Sonatype"
+            setUrl("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = sonatype_username
+                password = sonatype_password
+            }
+        }
+
+        maven {
+            name = "SonatypeSnapshots"
+            setUrl("https://oss.sonatype.org/content/repositories/snapshots/")
+            credentials {
+                username = sonatype_username
+                password = sonatype_password
+            }
+        }
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = "sources"
+        from(sourceSets["main"].allSource)
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = "javadoc"
+        from(javadoc.destinationDir)
+    }
+
+    publications {
+        maven(MavenPublication) {
+            from(components["java"])
+            artifact(sourcesJar)
+            artifact(javadocJar)
+
+            version = git.versionName()
+
+            groupId = project.getProperty("groupId")
+            artifactId = project.getProperty("artifactId")
+
+            pom {
+                name = "WaterRowerData-Android"
+                description = "A library for reading data from a BLE-connected WaterRower device"
+                url = "https://github.com/WaterRower-UK/WaterRowerData-Android"
+
+                licenses {
+                    license {
+                        name = "Apache License 2.0"
+                        url = "http://www.apache.org/licenses/LICENSE-2.0"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = "nhaarman"
+                        name = "Niek Haarman"
+                    }
+                }
+
+                scm {
+                    connection = "scm:git@github.com:WaterRower-UK/WaterRowerData-Android.git"
+                    developerConnection = "scm:git@github.com:WaterRower-UK/WaterRowerData-Android.git"
+                    url = "https://github.com/WaterRower-UK/WaterRowerData-Android"
+                }
+            }
+        }
+    }
+}
+
+tasks.withType(PublishToMavenRepository) {
+    onlyIf {
+        git.versionName().contains("SNAPSHOT") && repository == publishing.repositories["SonatypeSnapshots"] ||
+                !git.versionName().contains("SNAPSHOT") && repository == publishing.repositories["Sonatype"]
+    }
+}
+
+signing {
+    try {
+        project.ext."signing.keyId" = waterrower_signing_keyId
+        project.ext."signing.password" = waterrower_signing_password
+        project.ext."signing.secretKeyRingFile" = waterrower_signing_secretKeyRingFile
+
+        sign(publishing.publications["maven"])
+    } catch (Exception e) {
+        System.err.println(e.getLocalizedMessage())
+        System.err.println("WARNING: Signing not enabled.")
+    }
+}
