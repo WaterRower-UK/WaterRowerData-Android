@@ -133,15 +133,27 @@ object RowerDataCharacteristic {
     }
 
     private fun totalEnergy(bytes: ByteArray): Int? {
-        return readIntValue(bytes, RowerDataTotalEnergyField)
+        val result = readIntValue(bytes, RowerDataTotalEnergyField)
+        if (result == 0xFFFF) {
+            return null
+        }
+        return result
     }
 
     private fun energyPerHour(bytes: ByteArray): Int? {
-        return readIntValue(bytes, RowerDataEnergyPerHourField)
+        val result = readIntValue(bytes, RowerDataEnergyPerHourField)
+        if (result == 0xFFFF) {
+            return null
+        }
+        return result
     }
 
     private fun energyPerMinute(bytes: ByteArray): Int? {
-        return readIntValue(bytes, RowerDataEnergyPerMinuteField)
+        val result = readIntValue(bytes, RowerDataEnergyPerMinuteField)
+        if (result == 0xFF) {
+            return null
+        }
+        return result
     }
 
     private fun heartRate(bytes: ByteArray): Int? {
