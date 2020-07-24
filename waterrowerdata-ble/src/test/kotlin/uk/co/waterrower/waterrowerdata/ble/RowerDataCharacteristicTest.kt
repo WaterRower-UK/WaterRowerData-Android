@@ -532,6 +532,32 @@ class RowerDataCharacteristicTest {
             /* Then */
             expect(result.totalEnergyKiloCalories).toBe(513)
         }
+
+        // See section 4.8.1.11 of the FTMS Bluetooth Service specification.
+        @Test
+        fun `totalEnergy present but not supported results in null value`() {
+            // If this field has to be present (i.e., if the Expended Energy Present bit of the Flags field is set to 1)
+            // but the Server does not support the calculation of the Total Energy, the Server shall use the special
+            // value 0xFFFF (i.e., decimal value of 65535 in UINT16 format), which means ‘Data Not Available’.
+
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(expendedEnergyPresent = true)
+            val data = CharacteristicData.create(
+                flags,
+                0xFF.toByte(), // Total energy value 65535
+                0xFF.toByte(),
+                0, // Energy per hour value
+                0,
+                0, // Energy per minute value
+                0
+            )
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.totalEnergyKiloCalories).toBeNull()
+        }
     }
 
     @Nested
@@ -591,6 +617,31 @@ class RowerDataCharacteristicTest {
             /* Then */
             expect(result.energyPerHourKiloCalories).toBe(513)
         }
+
+        // See section 4.8.1.12 of the FTMS Bluetooth Service specification.
+        @Test
+        fun `energyPerHour present but not supported results in null value`() {
+            // If this field has to be present (i.e., if the Expended Energy Present bit of the Flags field is set to 1)
+            // but the Server does not support the calculation of the Energy per Hour, the Server shall use the special
+            // value 0xFFFF (i.e., decimal value of 65535 in UINT16 format), which means ‘Data Not Available’.
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(expendedEnergyPresent = true)
+            val data = CharacteristicData.create(
+                flags,
+                0, // Total energy value
+                0,
+                0xFF.toByte(), // Energy per hour value 65535
+                0xFF.toByte(),
+                0, // Energy per minute value
+                0
+            )
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.energyPerHourKiloCalories).toBeNull()
+        }
     }
 
     @Nested
@@ -627,6 +678,30 @@ class RowerDataCharacteristicTest {
 
             /* Then */
             expect(result.energyPerMinuteKiloCalories).toBe(1)
+        }
+
+        // See section 4.8.1.13 of the FTMS Bluetooth Service specification.
+        @Test
+        fun `energyPerMinute present but not supported results in null value`() {
+            // If this field has to be present (i.e., if the Expended Energy Present bit of the Flags field is set to 1)
+            // but the Server does not support the calculation of the Energy per Minute, the Server shall use the special
+            // value 0xFF (i.e., decimal value of 255 in UINT16 format), which means ‘Data Not Available’.
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(expendedEnergyPresent = true)
+            val data = CharacteristicData.create(
+                flags,
+                0, // Total energy value
+                0,
+                0, // Energy per hour value
+                0,
+                0xFF.toByte() // Energy per minute value 255
+            )
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.energyPerMinuteKiloCalories).toBeNull()
         }
     }
 
