@@ -1,6 +1,10 @@
 plugins {
     id("org.jetbrains.kotlin.jvm")
     id("org.gradle.java-library")
+
+    id("org.jetbrains.dokka")
+    id("org.gradle.maven-publish")
+    id("signing")
 }
 
 dependencies {
