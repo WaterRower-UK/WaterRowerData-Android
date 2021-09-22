@@ -92,4 +92,26 @@ data class RowerData(
      * The remaining time of a selected training session, in seconds.
      */
     val remainingTimeSeconds: Int?
-)
+) {
+
+    fun with(rowerData: RowerData): RowerData {
+        return RowerData(
+            strokeRate = rowerData.strokeRate ?: strokeRate,
+            strokeCount = rowerData.strokeCount ?: strokeCount,
+            averageStrokeRate = rowerData.averageStrokeRate ?: averageStrokeRate,
+            totalDistanceMeters = rowerData.totalDistanceMeters ?: totalDistanceMeters,
+            instantaneousPaceSeconds = rowerData.instantaneousPaceSeconds ?: instantaneousPaceSeconds,
+            averagePaceSeconds = rowerData.averagePaceSeconds ?: averagePaceSeconds,
+            instantaneousPowerWatts = rowerData.instantaneousPowerWatts ?: instantaneousPowerWatts,
+            averagePowerWatts = rowerData.averagePowerWatts ?: averagePowerWatts,
+            resistanceLevel = rowerData.resistanceLevel ?: resistanceLevel,
+            totalEnergyKiloCalories = rowerData.totalEnergyKiloCalories ?: totalEnergyKiloCalories,
+            energyPerHourKiloCalories = rowerData.energyPerHourKiloCalories ?: energyPerHourKiloCalories,
+            energyPerMinuteKiloCalories = rowerData.energyPerMinuteKiloCalories ?: energyPerMinuteKiloCalories,
+            heartRate = rowerData.heartRate ?: heartRate,
+            metabolicEquivalent = rowerData.metabolicEquivalent ?: metabolicEquivalent,
+            elapsedTimeSeconds = rowerData.elapsedTimeSeconds ?: elapsedTimeSeconds,
+            remainingTimeSeconds = rowerData.remainingTimeSeconds ?: remainingTimeSeconds,
+        )
+    }
+}

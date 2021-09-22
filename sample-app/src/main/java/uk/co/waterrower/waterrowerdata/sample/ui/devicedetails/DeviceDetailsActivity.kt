@@ -91,7 +91,8 @@ class DeviceDetailsActivity : AppCompatActivity() {
         if (connectionState is BleConnectionState.Connected) {
             rowerDataCancellable = ConnectedRowerDataBleDevice(connectionState.device).rowerData { rowerData ->
                 runOnUiThread {
-                    viewModel = viewModel.copy(rowerData = rowerData)
+                    val newRowerData = viewModel.rowerData?.with(rowerData) ?: rowerData
+                    viewModel = viewModel.copy(rowerData = newRowerData)
                 }
             }
         } else {
