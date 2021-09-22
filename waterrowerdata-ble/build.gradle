@@ -1,6 +1,5 @@
 plugins {
     id("org.jetbrains.kotlin.jvm")
-    id("org.gradle.java-library")
 
     id("org.jetbrains.dokka")
     id("org.gradle.maven-publish")
@@ -12,5 +11,5 @@ dependencies {
 
     testImplementation "com.nhaarman:expect.kt"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
-    testRuntime "org.junit.jupiter:junit-jupiter-engine"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }

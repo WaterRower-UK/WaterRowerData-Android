@@ -1,21 +1,21 @@
 package uk.co.waterrower.waterrowerdata.sample.ui.devices
 
-import androidx.compose.Composable
-import androidx.compose.MutableState
-import androidx.compose.mutableStateOf
-import androidx.ui.foundation.Text
-import androidx.ui.layout.Column
-import androidx.ui.material.TopAppBar
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import uk.co.waterrower.waterrowerdata.sample.ui.theming.AppTheme
-import uk.co.waterrower.waterrowerdata.sample.util.map
 
 @Composable
-fun DevicesView(viewModel: MutableState<DevicesViewModel>, onDeviceClick: (Device) -> Unit) {
+fun DevicesView(
+    viewModel: DevicesViewModel,
+    onDeviceClick: (Device) -> Unit
+) {
     Column {
         TopAppBar(title = { Text("Available devices") })
         DeviceListView(
-            devices = viewModel.map { it.devices },
+            devices = viewModel.devices,
             onClick = onDeviceClick
         )
     }
@@ -26,12 +26,10 @@ fun DevicesView(viewModel: MutableState<DevicesViewModel>, onDeviceClick: (Devic
 fun DevicesViewPreview() {
     AppTheme {
         DevicesView(
-            mutableStateOf(
-                DevicesViewModel(
-                    (1..20).map {
-                        Device(address = "Address $it", name = "Device $it")
-                    }
-                )
+            DevicesViewModel(
+                devices = (1..20).map { it: Int ->
+                    Device(address = "Address $it", name = "Device $it")
+                }
             ),
             onDeviceClick = { device -> println("Device clicked: $device") }
         )

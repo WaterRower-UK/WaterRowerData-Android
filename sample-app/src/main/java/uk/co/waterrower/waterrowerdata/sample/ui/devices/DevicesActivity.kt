@@ -4,9 +4,11 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.mutableStateOf
-import androidx.ui.core.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import uk.co.waterrower.waterrowerdata.ble.FitnessMachineService
 import uk.co.waterrower.waterrowerdata.sample.ui.devicedetails.DeviceDetailsActivity
 import uk.co.waterrower.waterrowerdata.sample.ui.theming.AppTheme
@@ -15,13 +17,9 @@ import uk.co.waterrower.waterrowerdata.sample.waterRowerDataSampleApplication
 
 class DevicesActivity : AppCompatActivity() {
 
-    private var viewModel = DevicesViewModel(devices = emptyList())
-        set(value) {
-            field = value
-            state.value = value
-        }
-
-    private val state = mutableStateOf(viewModel)
+    private var viewModel by mutableStateOf(
+        DevicesViewModel(devices = emptyList())
+    )
 
     private var scanCancellable: Cancellable? = null
         set(value) {
@@ -35,7 +33,7 @@ class DevicesActivity : AppCompatActivity() {
         setContent {
             AppTheme {
                 DevicesView(
-                    state,
+                    viewModel,
                     onDeviceClick = { device ->
                         startActivity(DeviceDetailsActivity.intent(this, device))
                     }

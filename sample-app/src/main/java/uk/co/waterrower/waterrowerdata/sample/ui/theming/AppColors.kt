@@ -1,6 +1,6 @@
 package uk.co.waterrower.waterrowerdata.sample.ui.theming
 
-import androidx.ui.graphics.Color
+import androidx.compose.ui.graphics.Color
 
 object AppColors {
 

@@ -1,27 +1,29 @@
 package uk.co.waterrower.waterrowerdata.sample.ui.devices
 
-import androidx.compose.Composable
-import androidx.compose.MutableState
-import androidx.compose.mutableStateOf
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.AdapterList
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.clickable
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
-import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun DeviceListView(
-    devices: MutableState<List<Device>>,
+    devices: List<Device>,
     onClick: (Device) -> Unit
 ) {
-    AdapterList(
-        data = devices.value
-    ) { device ->
-        DeviceRow(device = device, onClick = { onClick(device) })
+    LazyColumn {
+        items(devices) { device ->
+            DeviceRow(
+                device = device,
+                onClick = { onClick(device) }
+            )
+        }
     }
 }
 
@@ -38,8 +40,8 @@ private fun DeviceRow(
             )
             .padding(8.dp)
             .fillMaxWidth(),
-        children = {
-            Text(text = device.name)
+        content = {
+            Text(text = device.name ?: "Unknown device")
         }
     )
 }
@@ -48,11 +50,9 @@ private fun DeviceRow(
 @Composable
 fun DeviceListViewPreview() {
     DeviceListView(
-        mutableStateOf(
-            (1..20).map {
-                Device(address = "Address $it", name = "Device $it")
-            }
-        ),
+        devices = (1..20).map {
+            Device(address = "Address $it", name = "Device $it")
+        },
         onClick = { println("Clicked $it") }
     )
 }

@@ -3,10 +3,11 @@ package uk.co.waterrower.waterrowerdata.sample.ui.devicedetails
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.MutableState
-import androidx.compose.mutableStateOf
-import androidx.ui.core.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import uk.co.waterrower.waterrowerdata.sample.bluetooth.connection.BleConnection
 import uk.co.waterrower.waterrowerdata.sample.bluetooth.connection.BleConnectionFactory
 import uk.co.waterrower.waterrowerdata.sample.bluetooth.connection.BleConnectionState
@@ -17,27 +18,23 @@ import uk.co.waterrower.waterrowerdata.sample.util.Cancellable
 
 class DeviceDetailsActivity : AppCompatActivity() {
 
-    private val device: Device
-        get() {
-            return Device(
-                intent.deviceAddress,
-                intent.deviceName
-            )
+    private var device: Device? = null
+        set(value) {
+            field = value
+            viewModel = viewModel.copy(deviceName = value?.name ?: "")
         }
 
-    private val state: MutableState<DeviceDetailsViewModel> by lazy {
-        mutableStateOf(
-            DeviceDetailsViewModel(
-                deviceName = device.name,
-                connectionStatus = ConnectionStatus.Disconnected,
-                rowerData = null
-            )
+    private var viewModel by mutableStateOf(
+        DeviceDetailsViewModel(
+            deviceName = device?.name ?: "",
+            connectionStatus = ConnectionStatus.Disconnected,
+            rowerData = null
         )
-    }
+    )
 
     private val connection by lazy {
         BleConnectionFactory.from(this)
-            .createConnection(device.address)
+            .createConnection(device!!.address)
     }
 
     private var connectionStateListenerCancellable: Cancellable? = null
@@ -55,10 +52,12 @@ class DeviceDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        device = Device(intent.deviceAddress, intent.deviceName)
+
         setContent {
             AppTheme {
                 DeviceDetailsView(
-                    state,
+                    viewModel,
                     onUpClick = { finish() },
                     connectClick = { connection.connect() },
                     disconnectClick = { connection.disconnect() }
@@ -80,7 +79,7 @@ class DeviceDetailsActivity : AppCompatActivity() {
     }
 
     private fun handle(connectionState: BleConnectionState) {
-        state.value = state.value.copy(
+        viewModel = viewModel.copy(
             connectionStatus = when (connectionState) {
                 is BleConnectionState.Disconnected -> ConnectionStatus.Disconnected
                 is BleConnectionState.Connecting -> ConnectionStatus.Connecting
@@ -92,12 +91,12 @@ class DeviceDetailsActivity : AppCompatActivity() {
         if (connectionState is BleConnectionState.Connected) {
             rowerDataCancellable = ConnectedRowerDataBleDevice(connectionState.device).rowerData { rowerData ->
                 runOnUiThread {
-                    state.value = state.value.copy(rowerData = rowerData)
+                    viewModel = viewModel.copy(rowerData = rowerData)
                 }
             }
         } else {
             rowerDataCancellable = null
-            state.value = state.value.copy(rowerData = null)
+            viewModel = viewModel.copy(rowerData = null)
         }
     }
 

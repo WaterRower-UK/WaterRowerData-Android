@@ -12,8 +12,6 @@ jobs:
 
       - name: ktlint
         run: |
-          curl -sSLO https://github.com/pinterest/ktlint/releases/download/0.37.2/ktlint
-          chmod a+x ktlint
           ./ktlint "**/src/**/*.kt" --color --relative
 
       - name: Test
