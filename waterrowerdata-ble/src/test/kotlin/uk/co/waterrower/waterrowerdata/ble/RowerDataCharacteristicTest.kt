@@ -199,7 +199,7 @@ class RowerDataCharacteristicTest {
         }
 
         @Test
-        fun `instantaneousPace not present results in uint16 value for low value`() {
+        fun `instantaneousPace present results in uint16 value for low value`() {
             /* Given */
             val flags = RowerDataCharacteristicFlags.create(instantaneousPacePresent = true)
             val data = CharacteristicData.create(flags, 1, 0)
@@ -212,7 +212,7 @@ class RowerDataCharacteristicTest {
         }
 
         @Test
-        fun `instantaneousPace not present results in uint16 value for high value`() {
+        fun `instantaneousPace present results in uint16 value for high value`() {
             /* Given */
             val flags = RowerDataCharacteristicFlags.create(instantaneousPacePresent = true)
             val data = CharacteristicData.create(flags, 1, 2) // 1 + 512
@@ -222,6 +222,19 @@ class RowerDataCharacteristicTest {
 
             /* Then */
             expect(result.instantaneousPaceSeconds).toBe(513)
+        }
+
+        @Test
+        fun `instantaneousPace present but invalid values returns null`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(instantaneousPacePresent = true)
+            val data = CharacteristicData.create(flags, -1, -1) // 1 + 512
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.instantaneousPaceSeconds).toBeNull()
         }
     }
 

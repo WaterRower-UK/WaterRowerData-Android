@@ -113,7 +113,11 @@ object RowerDataCharacteristic {
     }
 
     private fun instantaneousPaceSeconds(bytes: ByteArray): Int? {
-        return readIntValue(bytes, RowerDataInstantaneousPaceField)
+        val result = readIntValue(bytes, RowerDataInstantaneousPaceField)
+        if (result == 65535) { // Invalid value
+            return null
+        }
+        return result
     }
 
     private fun averagePaceSeconds(bytes: ByteArray): Int? {
