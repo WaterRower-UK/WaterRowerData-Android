@@ -8,7 +8,11 @@ import uk.co.waterrower.waterrowerdata.ble.internal.gattspecification.Format.UIn
 internal fun ByteArray.readIntValue(
     format: Format,
     offset: Int
-): Int {
+): Int? {
+    if (size < offset + format.numberOfBytes()) {
+        return null
+    }
+
     return when (format) {
         UInt8 -> unsignedByteToInt(this[offset])
         UInt16 -> unsignedBytesToInt(this[offset], this[offset + 1])
