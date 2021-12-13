@@ -7,6 +7,10 @@ internal class BitRequirement(
 
     override fun checkIn(bytes: ByteArray): Boolean {
         val flagsValue = bytes.readIntValue(Format.UInt16, offset = 0)
+        if (flagsValue == null) {
+            return false
+        }
+
         return flagsValue.and(1.shl(bitIndex)) == (bitValue.shl(bitIndex))
     }
 }

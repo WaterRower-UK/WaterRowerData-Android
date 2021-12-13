@@ -703,6 +703,26 @@ class RowerDataCharacteristicTest {
             /* Then */
             expect(result.energyPerMinuteKiloCalories).toBeNull()
         }
+
+        @Test
+        fun `Energy per minute present in flags but not included returns null`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(expendedEnergyPresent = true)
+            val data = CharacteristicData.create(
+                flags,
+                0, // Total energy value
+                0,
+                0, // Energy per hour value
+                0,
+                // Not including energy per minute value
+            )
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.energyPerMinuteKiloCalories).toBeNull()
+        }
     }
 
     @Nested
