@@ -6,6 +6,10 @@ plugins {
     id("signing")
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
 

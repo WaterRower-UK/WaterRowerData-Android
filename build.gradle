@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlinVersion = "1.5.20"
+    ext.kotlinVersion = "1.5.21"
 
     repositories {
         google()
@@ -7,19 +7,19 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.2")
+        classpath("com.android.tools.build:gradle:7.0.4")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("de.mannodermaus.gradle.plugins:android-junit5:1.8.0.0")
-        classpath("com.adarshr:gradle-test-logger-plugin:3.0.0")
+        classpath("com.adarshr:gradle-test-logger-plugin:3.1.0")
 
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.5.0")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.6.0")
         classpath("org.jetbrains.dokka:dokka-android-gradle-plugin:0.9.18")
     }
 }
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.29.0"
-    id("io.spring.dependency-management") version "1.0.9.RELEASE"
+    id("com.github.ben-manes.versions") version "0.39.0"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
 apply from: "$rootDir/dependencies.gradle"
