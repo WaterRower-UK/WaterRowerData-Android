@@ -840,6 +840,22 @@ class RowerDataCharacteristicTest {
             /* Then */
             expect(result.elapsedTimeSeconds).toBe(513)
         }
+
+        @Test
+        fun `elapsedTime present in flags but not included results in null value`() {
+            /* Given */
+            val flags = RowerDataCharacteristicFlags.create(elapsedTimePresent = true)
+            val data = CharacteristicData.create(
+                flags,
+                // Not including elapsed time value
+            )
+
+            /* When */
+            val result = RowerDataCharacteristic.decode(data)
+
+            /* Then */
+            expect(result.elapsedTimeSeconds).toBeNull()
+        }
     }
 
     @Nested
