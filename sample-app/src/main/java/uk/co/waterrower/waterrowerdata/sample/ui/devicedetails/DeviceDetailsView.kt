@@ -50,6 +50,8 @@ fun DeviceDetailsView(
             )
 
             if (viewModel.connectionStatus == Connected) {
+                DataRow(title = "Battery level", value = viewModel.batteryLevel)
+
                 DataRow(title = "Stroke rate", value = viewModel.rowerData?.strokeRate)
                 DataRow(title = "Stroke count", value = viewModel.rowerData?.strokeCount)
                 DataRow(title = "Average stroke rate", value = viewModel.rowerData?.averageStrokeRate)
@@ -177,7 +179,8 @@ fun DeviceDetailsViewPreview() {
                     metabolicEquivalent = null,
                     elapsedTimeSeconds = 376,
                     remainingTimeSeconds = null
-                )
+                ),
+                batteryLevel = 33,
             ),
             onUpClick = { println("Up clicked") },
             connectClick = { println("Connect clicked") },

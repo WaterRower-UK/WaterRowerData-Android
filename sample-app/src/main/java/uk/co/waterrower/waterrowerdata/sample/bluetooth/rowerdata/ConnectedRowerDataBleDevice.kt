@@ -18,4 +18,14 @@ class ConnectedRowerDataBleDevice(
             callback(RowerDataCharacteristic.decode(data))
         }
     }
+
+    fun batteryLevel(callback: (Int) -> Unit): Cancellable {
+        return connectedBleDevice.listen(
+            serviceUUID = BatteryService.uuid,
+            characteristicUUID = BatteryLevelCharacteristic.uuid
+        ) { data ->
+            val value = data[0].toInt() and 0xFF
+            callback(value)
+        }
+    }
 }

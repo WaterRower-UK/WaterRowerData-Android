@@ -5,7 +5,8 @@ import uk.co.waterrower.waterrowerdata.ble.RowerData
 data class DeviceDetailsViewModel(
     val deviceName: String,
     val connectionStatus: ConnectionStatus,
-    val rowerData: RowerData?
+    val rowerData: RowerData?,
+    val batteryLevel: Int?,
 ) {
 
     fun withRowerData(rowerData: RowerData?): DeviceDetailsViewModel {

@@ -100,9 +100,18 @@ internal class BleConnectionBluetoothGattCallback : BluetoothGattCallback() {
     fun enableNotifications(serviceUUID: UUID, characteristicUUID: UUID) {
         val gatt = gatt ?: error("Gatt not available")
 
-        val service = gatt.getService(serviceUUID)
-        val characteristic = service.getCharacteristic(characteristicUUID)
-        val descriptor = characteristic.getDescriptor(ClientCharacteristicConfigurationDescriptor.uuid)
+        val service = gatt.getService(serviceUUID) ?: run {
+            w("ConnectedBleDevice", "service not available: $serviceUUID")
+            return
+        }
+        val characteristic = service.getCharacteristic(characteristicUUID) ?: run {
+            w("ConnectedBleDevice", "characteristic not available; $characteristicUUID")
+            return
+        }
+        val descriptor = characteristic.getDescriptor(ClientCharacteristicConfigurationDescriptor.uuid) ?: run {
+            w("ConnectedBleDevice", "descriptor not available")
+            return
+        }
 
         d("ConnectedBleDevice", "Enabling characteristic notification for [$serviceUUID, $characteristicUUID]")
         descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
