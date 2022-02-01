@@ -28,7 +28,8 @@ class DeviceDetailsActivity : AppCompatActivity() {
         DeviceDetailsViewModel(
             deviceName = device?.name ?: "",
             connectionStatus = ConnectionStatus.Disconnected,
-            rowerData = null
+            rowerData = null,
+            batteryLevel = null,
         )
     )
 
@@ -44,6 +45,12 @@ class DeviceDetailsActivity : AppCompatActivity() {
         }
 
     private var rowerDataCancellable: Cancellable? = null
+        set(value) {
+            field?.cancel()
+            field = value
+        }
+
+    private var batteryLevelCancellable: Cancellable? = null
         set(value) {
             field?.cancel()
             field = value
@@ -89,14 +96,21 @@ class DeviceDetailsActivity : AppCompatActivity() {
         )
 
         if (connectionState is BleConnectionState.Connected) {
-            rowerDataCancellable = ConnectedRowerDataBleDevice(connectionState.device).rowerData { rowerData ->
+            val connectedDevice = ConnectedRowerDataBleDevice(connectionState.device)
+            rowerDataCancellable = connectedDevice.rowerData { rowerData ->
                 runOnUiThread {
                     val newRowerData = viewModel.rowerData?.with(rowerData) ?: rowerData
                     viewModel = viewModel.copy(rowerData = newRowerData)
                 }
             }
+            batteryLevelCancellable = connectedDevice.batteryLevel { batteryLevel ->
+                runOnUiThread {
+                    viewModel = viewModel.copy(batteryLevel = batteryLevel)
+                }
+            }
         } else {
             rowerDataCancellable = null
+            batteryLevelCancellable = null
             viewModel = viewModel.copy(rowerData = null)
         }
     }
@@ -104,6 +118,7 @@ class DeviceDetailsActivity : AppCompatActivity() {
     override fun onPause() {
         connectionStateListenerCancellable = null
         rowerDataCancellable = null
+        batteryLevelCancellable = null
         connection.disconnect()
 
         super.onPause()
