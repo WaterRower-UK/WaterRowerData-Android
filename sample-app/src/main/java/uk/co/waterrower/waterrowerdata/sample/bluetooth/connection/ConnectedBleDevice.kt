@@ -41,4 +41,26 @@ class ConnectedBleDevice internal constructor(
                 this.callback.removeCharacteristicChangedListener(listener)
             }
     }
+
+    fun read(
+        serviceUUID: UUID,
+        characteristicUUID: UUID,
+        callback: (ByteArray) -> Unit
+    ): Cancellable {
+        val listener: (BluetoothGattCharacteristic) -> Unit = { characteristic ->
+            if (characteristic.uuid == characteristicUUID) {
+                // Copy the byte array: Android internals may recycle the instance.
+                val bytes = ByteArray(characteristic.value.size) { index -> characteristic.value[index] }
+                callback.invoke(bytes)
+            }
+        }
+
+        this.callback.addCharacteristicReadListener(listener)
+        this.callback.read(serviceUUID, characteristicUUID)
+
+        return Cancellable
+            .cancellable {
+                this.callback.removeCharacteristicChangedListener(listener)
+            }
+    }
 }

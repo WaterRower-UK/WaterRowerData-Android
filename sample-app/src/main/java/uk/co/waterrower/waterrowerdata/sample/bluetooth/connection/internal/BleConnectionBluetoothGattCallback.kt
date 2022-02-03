@@ -84,6 +84,7 @@ internal class BleConnectionBluetoothGattCallback : BluetoothGattCallback() {
     }
 
     private var characteristicChangedListeners = listOf<(BluetoothGattCharacteristic) -> Unit>()
+    private var characteristicReadListeners = listOf<(BluetoothGattCharacteristic) -> Unit>()
 
     fun addCharacteristicChangedListener(listener: (BluetoothGattCharacteristic) -> Unit) {
         characteristicChangedListeners += listener
@@ -93,8 +94,20 @@ internal class BleConnectionBluetoothGattCallback : BluetoothGattCallback() {
         characteristicChangedListeners -= listener
     }
 
+    fun addCharacteristicReadListener(listener: (BluetoothGattCharacteristic) -> Unit) {
+        characteristicReadListeners += listener
+    }
+
+    fun removeCharacteristicReadListener(listener: (BluetoothGattCharacteristic) -> Unit) {
+        characteristicReadListeners -= listener
+    }
+
     override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
         characteristicChangedListeners.forEach { it.invoke(characteristic) }
+    }
+
+    override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
+        characteristicReadListeners.forEach { it.invoke(characteristic) }
     }
 
     fun enableNotifications(serviceUUID: UUID, characteristicUUID: UUID) {
@@ -117,6 +130,23 @@ internal class BleConnectionBluetoothGattCallback : BluetoothGattCallback() {
         descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
         gatt.writeDescriptor(descriptor)
         gatt.setCharacteristicNotification(characteristic, true)
+    }
+
+    fun read(serviceUUID: UUID, characteristicUUID: UUID) {
+        val gatt = gatt ?: error("Gatt not available")
+
+        val service = gatt.getService(serviceUUID) ?: run {
+            w("ConnectedBleDevice", "service not available: $serviceUUID")
+            return
+        }
+        val characteristic = service.getCharacteristic(characteristicUUID) ?: run {
+            w("ConnectedBleDevice", "characteristic not available; $characteristicUUID")
+            return
+        }
+
+        d("ConnectedBleDevice", "Reading characteristic for [$serviceUUID, $characteristicUUID]")
+        val result = gatt.readCharacteristic(characteristic)
+        d("ConnectedBleDevice", "Read result: $result")
     }
 
     interface ConnectionStateListener {

@@ -20,12 +20,25 @@ class ConnectedRowerDataBleDevice(
     }
 
     fun batteryLevel(callback: (Int) -> Unit): Cancellable {
-        return connectedBleDevice.listen(
+        val listenCancellable = connectedBleDevice.listen(
             serviceUUID = BatteryService.uuid,
             characteristicUUID = BatteryLevelCharacteristic.uuid
         ) { data ->
             val value = data[0].toInt() and 0xFF
             callback(value)
+        }
+
+        val readCancellable = connectedBleDevice.read(
+            serviceUUID = BatteryService.uuid,
+            characteristicUUID = BatteryLevelCharacteristic.uuid
+        ) { data ->
+            val value = data[0].toInt() and 0xFF
+            callback(value)
+        }
+
+        return Cancellable.cancellable {
+            listenCancellable.cancel()
+            readCancellable.cancel()
         }
     }
 }
